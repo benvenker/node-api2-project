@@ -27,14 +27,13 @@ router.post("/", (req, res) => {
 // sent inside of the request body
 router.post("/:id/comments", (req, res) => {
   if (!req.body.text) {
-    res
+    return res
       .status(400)
       .json({ errorMessage: "Please provide text for the comment." });
   }
   posts
     .findById(req.params.id)
     .then((post) => {
-      console.log(post);
       if (post === undefined)
         return res.status(404).json({
           message: "The post with the specified ID does not exist.",
@@ -42,7 +41,6 @@ router.post("/:id/comments", (req, res) => {
       comments
         .insertComment({ post_id: req.params.id, text: req.body.text })
         .then((comment) => {
-          console.log(comment);
           res.status(201).json(comment);
         });
     })
@@ -64,6 +62,22 @@ router.get("/", (req, res) => {
 });
 
 // GET to /api/posts/:id
+router.get("/:id", (req, res) => {
+  posts
+    .findById(req.params.id)
+    .then((post) => {
+      post === undefined
+        ? res
+            .status(404)
+            .json({ message: "The post with the specified ID does not exist." })
+        : res.status(200).json(post);
+    })
+    .catch((err) =>
+      res
+        .status(500)
+        .json({ error: "The post information could not be retrieved." })
+    );
+});
 
 // GET to /api/posts/:id/comments
 router.get("/:id/comments", (req, res) => {
