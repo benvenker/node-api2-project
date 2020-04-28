@@ -1,3 +1,6 @@
+# Database
+./data/lambda.db3
+
 # Logs
 logs
 *.log
