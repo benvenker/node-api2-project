@@ -81,9 +81,41 @@ router.get("/:id", (req, res) => {
 
 // GET to /api/posts/:id/comments
 router.get("/:id/comments", (req, res) => {
-  comments
-    .findPostComments(req.params.id)
-    .then((comments) => res.json(comments));
+  posts
+    .findById(req.params.id)
+    .then((post) => {
+      post === undefined
+        ? res
+            .status(404)
+            .json({ message: "The post with the specified ID does not exist." })
+        : comments
+            .findPostComments(req.params.id)
+            .then((comments) => res.json(comments));
+    })
+    .catch((err) =>
+      res
+        .status(500)
+        .json({ error: "The comments information could not be retrieved." })
+    );
+});
+
+// DELETE post by ID
+router.delete("/:id", (req, res) => {
+  console.log("deleted");
+  posts
+    .findById(req.params.id)
+    .then((post) => {
+      post === undefined
+        ? res
+            .status(404)
+            .json({ message: "The post with the specified ID does not exist." })
+        : posts
+            .remove(req.params.id)
+            .then((post) => res.status(200).json(post));
+    })
+    .catch((err) =>
+      res.status(500).json({ error: "The post could not be removed" })
+    );
 });
 
 module.exports = router;
