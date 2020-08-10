@@ -28,15 +28,11 @@ function insert(post) {
 }
 
 function update(id, post) {
-  return db('posts')
-    .where('id', Number(id))
-    .update(post);
+  return db('posts').where('id', Number(id)).update(post);
 }
 
 function remove(id) {
-  return db('posts')
-    .where('id', Number(id))
-    .del();
+  return db('posts').where('id', Number(id)).del();
 }
 
 function findPostComments(postId) {
